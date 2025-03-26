@@ -28,6 +28,11 @@ class Record:
     def del_phone(self, number):
         self.phones = [phone for phone in self.phones if phone.value != number]
 
+    def find_phone(self, number):
+        for phone in self.phones:
+            if phone.value == number:
+                 return phone
+
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
@@ -54,5 +59,11 @@ if __name__ == "__main__":
 
     record01.del_phone("1234567891")
     assert len(record01.phones) == 1
-    
+
+    # number not found
+    assert record01.find_phone("1234567891") == None
+    # number found
+    assert record01.find_phone("1234567890") != None
+    assert record01.find_phone("1234567890").value == "1234567890"
+
     print(record01, len(record01.phones))
