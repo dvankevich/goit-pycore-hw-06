@@ -9,12 +9,17 @@ class Field:
 
 class Name(Field):
     def __init__(self, value):
-        # ToDo add check is value not empty
+        # check is value not empty
+        if len(value) == 0:
+            raise ValueError("Name is not be empty")
         super().__init__(value)
 
 class Phone(Field):
     def __init__(self, value):
-        # ToDo add pnone number validation
+        # Pnone number validation
+        # ToDo зробити валідацію за допомогою регулярного виразу.
+        if (len(value) != 10) or (not value.isdigit()):
+             raise ValueError("Incorrect phone number format")
         super().__init__(value)
 
 class Record:
@@ -40,7 +45,44 @@ class AddressBook(UserDict):
     # реалізація класу
 		pass
 
+# Тестові функції
+def test_phone_number_validation():
+    # Тестування коректних номерів телефону
+    try:
+        phone1 = Phone("1234567890")  # коректний номер
+        assert phone1.value == "1234567890"  # перевірка, чи правильно зберігся номер
+
+        phone2 = Phone("9876543210")  # коректний номер
+        assert phone2.value == "9876543210"
+
+    except ValueError as e:
+        assert False, f"Unexpected ValueError: {e}"
+
+    # Тестування некоректних номерів телефону
+    try:
+        phone3 = Phone("123")  # некоректний номер
+        assert False, "Expected ValueError for short phone number"
+    except ValueError:
+        pass  # Очікувана помилка, тест проходить
+
+    try:
+        phone4 = Phone("12345678901")  # некоректний номер
+        assert False, "Expected ValueError for long phone number"
+    except ValueError:
+        pass  # Очікувана помилка, тест проходить
+
+    try:
+        phone5 = Phone("12345abcde")  # некоректний номер
+        assert False, "Expected ValueError for non-digit characters"
+    except ValueError:
+        pass  # Очікувана помилка, тест проходить
+
 if __name__ == "__main__":
+    # ToDo спробувати unittest або pytest для тестування
+    print("TEST phone number validation")
+    test_phone_number_validation()
+    print("TEST phone number validation PASS")
+
     record01 = Record("Name01")
     print(record01.name, len(record01.phones))
     assert str(record01.name) == "Name01"
