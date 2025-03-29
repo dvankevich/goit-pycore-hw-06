@@ -42,8 +42,20 @@ class Record:
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
 class AddressBook(UserDict):
-    # реалізація класу
-		pass
+    def add_record(self, record):
+        self.data[record.name.value] = record
+
+    def find(self, name):
+        record = self.data.get(name)
+        #print("find record result", record)
+        return record
+    
+    def delete(self, name):
+        if name in self.data:
+            del self.data[name]
+        else:
+            print(name, "not found")
+
 
 # Тестові функції
 def test_phone_number_validation():
@@ -84,12 +96,12 @@ if __name__ == "__main__":
     print("TEST phone number validation PASS")
 
     record01 = Record("Name01")
-    print(record01.name, len(record01.phones))
+    #print(record01.name, len(record01.phones))
     assert str(record01.name) == "Name01"
 
     record01.add_phone("1234567890")
     record01.add_phone("1234567891")
-    print(record01, len(record01.phones))
+    #print(record01, len(record01.phones))
     assert len(record01.phones) == 2
 
     record01.del_phone("1234567891")
@@ -108,4 +120,23 @@ if __name__ == "__main__":
     assert record01.find_phone("1234567890") != None
     assert record01.find_phone("1234567890").value == "1234567890"
 
-    print(record01, len(record01.phones))
+    #print(record01, len(record01.phones))
+
+    book = AddressBook()
+    assert len(book.data.items()) == 0
+    #print(len(book.data.items()))
+    book.add_record(record01)
+    #print(len(book.data.items()))
+    assert len(book.data.items()) == 1
+
+    name01 = book.find("Name01")
+    assert str(name01.name) == "Name01"
+    #print(name01)
+    name02 = book.find("Name02")
+    assert name02 == None
+    #print(name02)
+
+    book.delete("Name02")
+    assert len(book.data.items()) == 1
+    book.delete("Name01")
+    assert len(book.data.items()) == 0
